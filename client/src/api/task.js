@@ -4,6 +4,10 @@ export const getAllTasks = (columnId) => {
   return axiosClient.get(`/task/get/${columnId}`);
 };
 
+export const getAllTasksByBoardId = (boardId)=>{
+  return axiosClient.get(`/task/get?board_id=${boardId}`);
+}
+
 export const getTaskById = (taskId) => {
   return axiosClient.get(`/task/get/byid/${taskId}`);
 };

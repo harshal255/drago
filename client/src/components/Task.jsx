@@ -17,6 +17,8 @@ const Task = ({
   dueDate,
   color,
   setTasks,
+  index,
+  setActiveCard,
 }) => {
   const navigate = useNavigate();
   const { getAllTasks } = useContext(AppContext);
@@ -38,6 +40,8 @@ const Task = ({
     <div
       className="relative shadow-2xl p-5 rounded-lg bg-white flex flex-col gap-3"
       draggable={true}
+      onDragStart={() => setActiveCard(index)}
+      onDragEnd={() => setActiveCard(null)}
     >
       <div className="flex items-center gap-5 absolute top-0 right-0.5 p-3 text-xl z-50">
         <FaEdit

@@ -10,7 +10,7 @@ import {
 import { getAllBoards as getAllBoardsClient } from "../api/board";
 import { getAllColumns as getAllColumnsClient } from "../api/column";
 import {
-  getAllTasks as getAllTasksClient
+  getAllTasksByBoardId,
 } from "../api/task";
 
 export const AppContext = createContext({});
@@ -105,9 +105,9 @@ const AppContextProvider = ({ children }) => {
     }
   };
 
-  const getAllTasks = async (column_id) => {
+  const getAllTasks = async (board_id) => {
     try {
-      const res = await getAllTasksClient(column_id);
+      const res = await getAllTasksByBoardId(board_id);
       const { data } = res;
       const tasks = data.map((ele) => {
         return {
@@ -118,6 +118,7 @@ const AppContextProvider = ({ children }) => {
           description: ele.description,
           dueDate: ele.dueDate,
           color: ele.color,
+          board_id: ele.board_id,
         };
       });
       return tasks;
@@ -125,7 +126,6 @@ const AppContextProvider = ({ children }) => {
       console.error(error);
     }
   };
-
 
   useEffect(() => {
     const cookieToken = Cookies.get("token");
