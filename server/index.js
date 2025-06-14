@@ -15,13 +15,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 //Enable All CORS Requests
 app.use(cors());
-//for prevent cache
-app.use((req, res, next) => {
-  res.setHeader("Cache-Control", "no-store");
-  res.setHeader("Pragma", "no-cache");
-  next();
-});
-
 app.get("/api", (req, res) => {
   res.send("trello-lite-server get request!");
 });
