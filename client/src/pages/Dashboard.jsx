@@ -39,8 +39,11 @@ const Dashboard = () => {
 
   console.log({ boardId });
   const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(TouchSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5, // 👈 Only drag after moving 5px
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
