@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose");
 const Column = require("../models/Column");
 const Task = require("../models/Task");
 
@@ -14,14 +15,68 @@ const getAllTasks = async (req, res, next) => {
   }
 };
 
+const getAllTasksByBoardId = async (req, res, next) => {
+  try {
+    const board_id = req.query.board_id;
+    // Step 1: Find all columns for this board
+    // const columns = await Column.find({ board_id });
+
+    // const columnIds = columns.map((col) => col._id);
+
+    // Step 2: Find all tasks in those columns
+    // const tasks = await Task.find({ column_id: { $in: columnIds } });
+    const tasks = await Task.aggregate([
+      {
+        $lookup: {
+          from: "columns", // name of the column collection
+          localField: "column_id",
+          foreignField: "_id",
+          as: "columnInfo",
+        },
+      },
+      {
+        $unwind: "$columnInfo", // flatten the array
+      },
+      {
+        $match: {
+          "columnInfo.board_id": new mongoose.Types.ObjectId(board_id),
+        },
+      },
+      {
+        $project: {
+          title: 1,
+          description: 1,
+          dueDate: 1,
+          priority: 1,
+          color: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          // include column_id or _id if needed
+          column_id: 1,
+          // pick only required fields from columnInfo
+          board_id: "$columnInfo.board_id",
+          // columnInfo: {
+          //   _id: "$columnInfo._id",
+          //   title: "$columnInfo.title",            
+          // },
+        },
+      },
+    ]);
+
+    res
+      .status(200)
+      .json({ data: tasks, message: "Tasks Fetched Successfully." });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const getTaskById = async (req, res, next) => {
   try {
     const task_id = req.params.task_id;
     const task = await Task.findById(task_id);
 
-    res
-      .status(200)
-      .json({ data: task, message: "Task Fetched Successfully." });
+    res.status(200).json({ data: task, message: "Task Fetched Successfully." });
   } catch (error) {
     next(error);
   }
@@ -104,4 +159,12 @@ const deleteTask = async (req, res, next) => {
   }
 };
 
-module.exports = { createTask, getAllTasks,getTaskById, updateTask, moveTask, deleteTask };
+module.exports = {
+  createTask,
+  getAllTasks,
+  getTaskById,
+  updateTask,
+  moveTask,
+  deleteTask,
+  getAllTasksByBoardId,
+};

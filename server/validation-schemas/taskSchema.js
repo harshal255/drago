@@ -3,6 +3,9 @@ const Joi = require("joi");
 const getAllTasksSchema = Joi.object().keys({
   column_id: Joi.string().required(),
 });
+const getAllTasksByBoardIdSchema = Joi.object().keys({
+  board_id: Joi.string().required(),
+});
 
 const createTaskSchema = Joi.object().keys({
   column_id: Joi.string().required(),
@@ -26,13 +29,14 @@ const moveTaskSchema = Joi.object().keys({
 });
 
 const getTaskSchema = Joi.object().keys({
-  task_id: Joi.string().required()
+  task_id: Joi.string().required(),
 });
 
 module.exports = {
   getAllTasksSchema,
+  getAllTasksByBoardIdSchema,
   createTaskSchema,
   updateTaskSchema,
   moveTaskSchema,
-  getTaskSchema
+  getTaskSchema,
 };

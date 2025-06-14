@@ -5,6 +5,7 @@ const {
   updateTaskSchema,
   moveTaskSchema,
   getTaskSchema,
+  getAllTasksByBoardIdSchema,
 } = require("../validation-schemas/taskSchema");
 const {
   createTask,
@@ -13,27 +14,48 @@ const {
   moveTask,
   updateTask,
   getTaskById,
+  getAllTasksByBoardId,
 } = require("../controllers/taskController");
 const validateRequest = require("../middlewares/validationHandler");
+const authHandler = require("../middlewares/authHandler");
 const router = express.Router();
 
 router.get(
   "/get/:column_id",
   validateRequest(getAllTasksSchema, "params"),
+  authHandler,
   getAllTasks
 );
 router.get(
   "/get/byid/:task_id",
   validateRequest(getTaskSchema, "params"),
+  authHandler,
   getTaskById
 );
-router.post("/create", validateRequest(createTaskSchema), createTask);
-router.put("/update", validateRequest(updateTaskSchema), updateTask);
-router.patch("/move", validateRequest(moveTaskSchema), moveTask);
+router.post(
+  "/create",
+  validateRequest(createTaskSchema),
+  authHandler,
+  createTask
+);
+router.put(
+  "/update",
+  validateRequest(updateTaskSchema),
+  authHandler,
+  updateTask
+);
+router.patch("/move", validateRequest(moveTaskSchema), authHandler, moveTask);
 router.delete(
   "/delete/:task_id",
   validateRequest(getTaskSchema, "params"),
+  authHandler,
   deleteTask
+);
+router.get(
+  "/get",
+  validateRequest(getAllTasksByBoardIdSchema, "query"),
+  authHandler,
+  getAllTasksByBoardId
 );
 
 module.exports = router;
