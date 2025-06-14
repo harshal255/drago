@@ -5,8 +5,6 @@ import { MdDeleteOutline } from "react-icons/md";
 import moment from "moment";
 import { AppContext } from "../context/AppContextProvider";
 import { useNavigate } from "react-router-dom";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 import { deleteTask as deleteTaskClient } from "../api/task";
 import toast from "react-hot-toast";
 import { useContext } from "react";
@@ -22,13 +20,6 @@ const Task = ({
 }) => {
   const navigate = useNavigate();
   const { getAllTasks } = useContext(AppContext);
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id });
-
-  const style = {
-    transition,
-    transform: CSS.Transform.toString(transform),
-  };
 
   const deleteTask = async (task_id, column_id) => {
     try {
@@ -46,11 +37,7 @@ const Task = ({
   return (
     <div
       className="relative shadow-2xl p-5 rounded-lg bg-white flex flex-col gap-3"
-      draggable="true"
-      ref={setNodeRef}
-      {...attributes}
-      {...listeners}
-      style={style}
+      draggable={true}
     >
       <div className="flex items-center gap-5 absolute top-0 right-0.5 p-3 text-xl z-50">
         <FaEdit
