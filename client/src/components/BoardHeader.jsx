@@ -4,8 +4,8 @@ import { AppContext } from "../context/AppContextProvider";
 import { FaPlus } from "react-icons/fa";
 
 const BoardHeader = () => {
-  const { boards, setBoardId, boardId, token } = useContext(AppContext);
-  console.log({ boardId, boards, token });
+  const { boards, setBoardId, boardId } = useContext(AppContext);
+  console.log({ boardId, boards });
   const navigate = useNavigate();
   return (
     <div className="grid grid-cols-5 gap-3 p-5 border border-gray-500 rounded-lg">
@@ -17,22 +17,21 @@ const BoardHeader = () => {
         Create a New Board
         <FaPlus />
       </div>
-      {token &&
-        boards.map((ele) => {
-          return (
-            <div
-              key={ele.id}
-              onClick={() => setBoardId(ele.id)}
-              className={`${
-                boardId === ele.id
-                  ? "bg-gray-200 border-gray-800"
-                  : "bg-gray-100  border-gray-300"
-              } border cursor-pointer duration-150 rounded-lg h-[150px] flex items-center justify-center w-full text-xl`}
-            >
-              {ele.title}
-            </div>
-          );
-        })}
+      {boards?.map((ele) => {
+        return (
+          <div
+            key={ele.id}
+            onClick={() => setBoardId(ele.id)}
+            className={`${
+              boardId === ele.id
+                ? "bg-gray-200 border-gray-800"
+                : "bg-gray-100  border-gray-300"
+            } border cursor-pointer duration-150 rounded-lg h-[150px] flex items-center justify-center w-full text-xl`}
+          >
+            {ele.title}
+          </div>
+        );
+      })}
     </div>
   );
 };

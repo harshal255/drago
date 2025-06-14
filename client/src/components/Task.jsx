@@ -3,23 +3,45 @@ import { CiClock1 } from "react-icons/ci";
 import { FaEdit } from "react-icons/fa";
 import { MdDeleteOutline } from "react-icons/md";
 import moment from "moment";
-import { useContext } from "react";
 import { AppContext } from "../context/AppContextProvider";
 import { useNavigate } from "react-router-dom";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { deleteTask as deleteTaskClient } from "../api/task";
+import toast from "react-hot-toast";
+import { useContext } from "react";
 
-
-const Task = ({ id, title, description, dueDate,color }) => {
-  const { deleteTask } = useContext(AppContext);
+const Task = ({
+  id,
+  column_id,
+  title,
+  description,
+  dueDate,
+  color,
+  setTasks,
+}) => {
   const navigate = useNavigate();
+  const { getAllTasks } = useContext(AppContext);
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id });
 
   const style = {
     transition,
     transform: CSS.Transform.toString(transform),
-  }; 
+  };
+
+  const deleteTask = async (task_id, column_id) => {
+    try {
+      const res = await deleteTaskClient(task_id);
+      const { message } = res;
+      toast.success(message);
+      const tasks = await getAllTasks(column_id);
+      setTasks(tasks);
+      console.log(task_id, column_id);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div
@@ -37,7 +59,7 @@ const Task = ({ id, title, description, dueDate,color }) => {
         />
         <MdDeleteOutline
           className="cursor-pointer hover:scale-110 duration-300"
-          onClick={() => deleteTask(id)}
+          onClick={() => deleteTask(id, column_id)}
         />
       </div>
       <span

@@ -15,7 +15,7 @@ const AddTask = () => {
     dueDate: "",
     priority: 1,
   };
-  const { getAllColumns, boards } = useContext(AppContext);
+  const { getAllColumns, boards, getAllTasks } = useContext(AppContext);
   const [formData, setFormData] = useState(initialFormData);
   const navigate = useNavigate();
   const [columns, setColumns] = useState([]);
@@ -31,6 +31,7 @@ const AddTask = () => {
     try {
       const res = await addTaskClient(formData);
       const { message } = res;
+      await getAllTasks(column_id);
       toast.success(message);
       navigate("/dashboard");
     } catch (error) {

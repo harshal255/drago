@@ -10,8 +10,7 @@ import {
 import { getAllBoards as getAllBoardsClient } from "../api/board";
 import { getAllColumns as getAllColumnsClient } from "../api/column";
 import {
-  getAllTasks as getAllTasksClient,
-  deleteTask as deleteTaskClient,
+  getAllTasks as getAllTasksClient
 } from "../api/task";
 
 export const AppContext = createContext({});
@@ -58,6 +57,8 @@ const AppContextProvider = ({ children }) => {
       setToken(data.token);
       setUser(data.user);
       toast.success(message);
+      // 🟢 Call board loader directly here after login
+      await getAllBoards();
       navigate("/dashboard");
     } catch (error) {
       console.log(error);
@@ -81,6 +82,7 @@ const AppContextProvider = ({ children }) => {
       const boards = data.map((ele) => {
         return { title: ele.title, id: ele._id };
       });
+      console.log({ boards });
       setBoards(boards);
       if (boards.length > 0) {
         setBoardId(boards[0].id);
@@ -123,16 +125,7 @@ const AppContextProvider = ({ children }) => {
       console.error(error);
     }
   };
-  const deleteTask = async (task_id) => {
-    try {
-      const res = await deleteTaskClient(task_id);
-      const { message } = res;
-      toast.success(message);
-      navigate("/dashboard");
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
 
   useEffect(() => {
     const cookieToken = Cookies.get("token");
@@ -153,9 +146,9 @@ const AppContextProvider = ({ children }) => {
         loginUser,
         logOut,
         boards,
+        getAllBoards,
         getAllColumns,
         getAllTasks,
-        deleteTask,
         boardId,
         setBoardId,
       }}

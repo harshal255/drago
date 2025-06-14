@@ -14,6 +14,8 @@ const AddBoard = () => {
   const [formData, setFormData] = useState({ title: "" });
   const navigate = useNavigate();
 
+  console.log({boards,getAllBoards})
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -24,6 +26,7 @@ const AddBoard = () => {
       const res = await addBoardClient(formData);
       const { message } = res;
       toast.success(message);
+      await getAllBoards();
       navigate("/dashboard");
     } catch (error) {
       console.log(error);
@@ -32,10 +35,9 @@ const AddBoard = () => {
   const deleteBoard = async (board_id) => {
     try {
       const res = await deleteBoardClient(board_id);
-
       const { message } = res;
       toast.success(message);
-      getAllBoards();
+      await getAllBoards();
     } catch (error) {
       console.log(error);
     }

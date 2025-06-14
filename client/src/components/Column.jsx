@@ -89,6 +89,7 @@ const Column = ({ title, id }) => {
         </div>
         <SortableContext items={tasks} strategy={verticalListSortingStrategy}>
           {tasks?.map((ele) => {
+            Object.assign(ele, { tasks, setTasks });
             return <Task key={ele.id} {...ele} />;
           })}
         </SortableContext>

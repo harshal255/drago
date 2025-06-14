@@ -59,7 +59,7 @@ const UpdateTask = () => {
 
   return (
     <div className="py-12 max-w-xl mx-auto divide-y md:max-w-4xl">
-      <h2 className="text-2xl font-bold">Create Task</h2>
+      <h2 className="text-2xl font-bold">Update Task</h2>
       <div className="mt-8 max-w-md">
         <form onSubmit={addTask} className="grid grid-cols-1 gap-6">
           <label className="block">

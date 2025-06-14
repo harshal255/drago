@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import { updateBoard as updateBoardClient } from "../api/board";
+import { AppContext } from "../context/AppContextProvider";
 
 const UpdateBoard = () => {
   const { board_id } = useParams();
+  const { getAllBoards } = useContext(AppContext);
   const [formData, setFormData] = useState({ title: "", board_id });
   const navigate = useNavigate();
 
@@ -18,6 +20,7 @@ const UpdateBoard = () => {
       const res = await updateBoardClient(formData);
       const { message } = res;
       toast.success(message);
+      await getAllBoards();
       navigate("/dashboard");
     } catch (error) {
       console.log(error);
