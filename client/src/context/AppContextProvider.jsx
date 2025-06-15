@@ -9,9 +9,7 @@ import {
 } from "../api/auth";
 import { getAllBoards as getAllBoardsClient } from "../api/board";
 import { getAllColumns as getAllColumnsClient } from "../api/column";
-import {
-  getAllTasksByBoardId,
-} from "../api/task";
+import { getAllTasksByBoardId } from "../api/task";
 
 export const AppContext = createContext({});
 
@@ -119,6 +117,7 @@ const AppContextProvider = ({ children }) => {
           dueDate: ele.dueDate,
           color: ele.color,
           board_id: ele.board_id,
+          order: ele.order,
         };
       });
       return tasks;

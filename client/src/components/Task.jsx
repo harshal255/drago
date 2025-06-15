@@ -16,8 +16,9 @@ const Task = ({
   description,
   dueDate,
   color,
+  // order,
   setTasks,
-  index,
+  // index,
   setActiveCard,
 }) => {
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ const Task = ({
     <div
       className="relative shadow-2xl p-5 rounded-lg bg-white flex flex-col gap-3"
       draggable={true}
-      onDragStart={() => setActiveCard(index)}
+      onDragStart={() => setActiveCard(id)}
       onDragEnd={() => setActiveCard(null)}
     >
       <div className="flex items-center gap-5 absolute top-0 right-0.5 p-3 text-xl z-50">

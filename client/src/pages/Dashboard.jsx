@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import Column from "../components/Column";
 import { AppContext } from "../context/AppContextProvider";
 import BoardHeader from "../components/BoardHeader";
+import { moveTask } from "../api/task";
 
 const Dashboard = () => {
   const [columns, setColumns] = useState([]);
@@ -12,19 +13,26 @@ const Dashboard = () => {
   console.log({ boardId });
   console.log({ tasks });
 
-  const onDrop = (column_id, position) => {
+  const onDrop = async (column_id, position) => {
     console.log(
       `${activeCard} is going to place into ${column_id} and at the position ${position}`
     );
-
     if (activeCard == null) return;
-    const taskToMove = tasks[activeCard]; //find task by index
-    const updatedTask = tasks.filter((task, index) => index !== activeCard);
-    updatedTask.splice(position, 0, {
-      ...taskToMove,
-      column_id,
-    });
-    setTasks(updatedTask);
+    const taskToMove = tasks.find((ele) => ele.id === activeCard); //find task by task id
+
+    console.log({ taskToMove });
+    try {
+      await moveTask({
+        task_id: taskToMove.id,
+        column_id,
+        position,
+      });
+      const updatedTask = await getAllTasks(boardId);
+      console.log({ updatedTask });
+      setTasks(updatedTask);
+    } catch (error) {
+      console.log({ error });
+    }
   };
 
   useEffect(() => {

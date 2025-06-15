@@ -25,7 +25,7 @@ const Column = ({ title, id, tasks, setTasks, onDrop, setActiveCard }) => {
               return (
                 <div key={index}>
                   <Task key={ele.id} {...ele} />
-                  <DropArea onDrop={() => onDrop(id, index + 1)} />
+                  <DropArea onDrop={() => onDrop(id, ele.order + 1)} />
                 </div>
               );
             }
