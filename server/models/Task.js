@@ -21,6 +21,7 @@ const TaskSchema = new mongoose.Schema({
     enum: [0, 1, 2],
     default: 1,
   },
+  order: { type: Number, required: true },
   color: {
     type: String,
   },
@@ -35,8 +36,29 @@ const TaskSchema = new mongoose.Schema({
 });
 
 TaskSchema.pre("save", function (next) {
-  // Modify the document or perform additional tasks
-  this.color = "#" + Math.floor(Math.random() * 16777215).toString(16);
+  if (this.isNew) {
+    let color;
+    while (true) {
+      // Generate RGB values within a reasonable range (to avoid white & black)
+      const r = Math.floor(Math.random() * 156) + 50; // 50-205
+      const g = Math.floor(Math.random() * 156) + 50;
+      const b = Math.floor(Math.random() * 156) + 50;
+
+      // Convert to hex and combine
+      color =
+        "#" +
+        [r, g, b]
+          .map((val) => val.toString(16).padStart(2, "0"))
+          .join("")
+          .toUpperCase();
+
+      // Optionally, add more filters if needed (e.g., specific color exclusions)
+      if (color !== "#FFFFFF" && color !== "#000000") break;
+    }
+
+    this.color = color;
+  }
+
   next();
 });
 

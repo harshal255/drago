@@ -48,6 +48,7 @@ const getAllTasksByBoardId = async (req, res, next) => {
           description: 1,
           dueDate: 1,
           priority: 1,
+          order: 1,
           color: 1,
           createdAt: 1,
           updatedAt: 1,
@@ -57,9 +58,12 @@ const getAllTasksByBoardId = async (req, res, next) => {
           board_id: "$columnInfo.board_id",
           // columnInfo: {
           //   _id: "$columnInfo._id",
-          //   title: "$columnInfo.title",            
+          //   title: "$columnInfo.title",
           // },
         },
+      },
+      {
+        $sort: { order: 1 },
       },
     ]);
 
@@ -88,13 +92,14 @@ const createTask = async (req, res, next) => {
     if (!column) {
       res.status(404).json({ data: {}, message: "Column Not Found" });
     }
-
+    const taskCount = await Task.countDocuments({ column_id });
     const task = new Task({
       title,
       description,
       dueDate,
       priority,
       column_id,
+      order: taskCount,
     });
     const newTask = await task.save();
     res
@@ -130,11 +135,26 @@ const updateTask = async (req, res, next) => {
 
 const moveTask = async (req, res, next) => {
   try {
-    const { task_id, column_id } = req.body;
-
+    const { task_id, column_id, position } = req.body;
     const task = await Task.findById(task_id);
 
     if (task) {
+      const fromColumnId = task.column_id;
+      // 1. Remove from old column
+      await Task.updateMany(
+        { column_id: fromColumnId, order: { $gt: task.order } },
+        { $inc: { order: -1 } }
+      );
+
+      // 2. Shift in new column
+      await Task.updateMany(
+        { column_id: column_id, order: { $gte: position } },
+        { $inc: { order: 1 } }
+      );
+      // 3. Update current task
+      task.column_id = column_id;
+      task.order = position;
+      await task.save();
       task.column_id = column_id;
       const updatedTask = await task.save();
       res
@@ -151,9 +171,21 @@ const moveTask = async (req, res, next) => {
 const deleteTask = async (req, res, next) => {
   const task_id = req.params.task_id;
   try {
-    await Task.findByIdAndDelete(task_id);
+    const task = await Task.findById(task_id);
+    if (!task) return res.status(404).json({ message: "Task not found" });
 
-    res.status(200).json({ data: task_id, message: "Task Deleted" });
+    const { column_id, order } = task;
+
+    // 1. Delete the task
+    await task.deleteOne();
+
+    // 2. Decrement order of tasks below the deleted one in the same column
+    await Task.updateMany(
+      { column_id, order: { $gt: order } },
+      { $inc: { order: -1 } }
+    );
+
+    res.status(200).json({ message: "Task deleted and order updated" });
   } catch (error) {
     next(error);
   }

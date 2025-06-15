@@ -26,6 +26,7 @@ const updateTaskSchema = Joi.object().keys({
 const moveTaskSchema = Joi.object().keys({
   task_id: Joi.string().required(),
   column_id: Joi.string().required(),
+  position: Joi.number().required(),
 });
 
 const getTaskSchema = Joi.object().keys({
