@@ -11,27 +11,24 @@ import { useContext } from "react";
 
 const Task = ({
   id,
-  column_id,
+  board_id,
   title,
   description,
   dueDate,
   color,
-  // order,
   setTasks,
-  // index,
   setActiveCard,
 }) => {
   const navigate = useNavigate();
   const { getAllTasks } = useContext(AppContext);
 
-  const deleteTask = async (task_id, column_id) => {
+  const deleteTask = async (task_id) => {
     try {
       const res = await deleteTaskClient(task_id);
       const { message } = res;
       toast.success(message);
-      const tasks = await getAllTasks(column_id);
+      const tasks = await getAllTasks(board_id);
       setTasks(tasks);
-      console.log(task_id, column_id);
     } catch (error) {
       console.log(error);
     }
@@ -51,7 +48,7 @@ const Task = ({
         />
         <MdDeleteOutline
           className="cursor-pointer hover:scale-110 duration-300"
-          onClick={() => deleteTask(id, column_id)}
+          onClick={() => deleteTask(id)}
         />
       </div>
       <span

@@ -19,12 +19,12 @@ const Column = ({ title, id, tasks, setTasks, onDrop, setActiveCard }) => {
         </div>
         <>
           <DropArea onDrop={() => onDrop(id, 0)} />
-          {tasks?.map((ele, index) => {
+          {tasks?.map((ele) => {
             if (ele.column_id === id) {
-              Object.assign(ele, { tasks, setTasks, setActiveCard, index });
+              Object.assign(ele, { tasks, setTasks, setActiveCard });
               return (
-                <div key={index}>
-                  <Task key={ele.id} {...ele} />
+                <div key={ele.id}>
+                  <Task {...ele} />
                   <DropArea onDrop={() => onDrop(id, ele.order + 1)} />
                 </div>
               );

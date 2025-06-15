@@ -36,7 +36,7 @@ const AppContextProvider = ({ children }) => {
       toast.success(message);
       navigate("/dashboard");
     } catch (error) {
-      console.log(error);
+      console.log({ error });
     }
   };
 
@@ -120,6 +120,7 @@ const AppContextProvider = ({ children }) => {
           order: ele.order,
         };
       });
+      console.log({ taskfromcontext: tasks });
       return tasks;
     } catch (error) {
       console.error(error);

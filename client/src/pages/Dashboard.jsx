@@ -10,9 +10,6 @@ const Dashboard = () => {
   const [tasks, setTasks] = useState([]);
   const [activeCard, setActiveCard] = useState(null);
 
-  console.log({ boardId });
-  console.log({ tasks });
-
   const onDrop = async (column_id, position) => {
     console.log(
       `${activeCard} is going to place into ${column_id} and at the position ${position}`
@@ -20,7 +17,6 @@ const Dashboard = () => {
     if (activeCard == null) return;
     const taskToMove = tasks.find((ele) => ele.id === activeCard); //find task by task id
 
-    console.log({ taskToMove });
     try {
       await moveTask({
         task_id: taskToMove.id,
@@ -28,7 +24,6 @@ const Dashboard = () => {
         position,
       });
       const updatedTask = await getAllTasks(boardId);
-      console.log({ updatedTask });
       setTasks(updatedTask);
     } catch (error) {
       console.log({ error });
