@@ -1,14 +1,14 @@
 import { useContext, useEffect, useState } from "react";
-import { AppContext } from "../context/AppContextProvider";
+import { AppContext } from "../context/AppContext";
 import { useNavigate } from "react-router-dom";
 
 export default function Auth() {
   const intialFormData = { email: "", password: "" };
   const [isLogin, setIsLogin] = useState(false);
   const [formData, setFormData] = useState(intialFormData);
-  const { loginUser, registerUser, token } = useContext(AppContext);
+  const { loginUser, registerUser, isAuthenticated } = useContext(AppContext);
   const navigate = useNavigate();
-  console.log("CTX:", registerUser, loginUser);
+  // console.log("CTX:", registerUser, loginUser);
 
   const selectAuth = () => {
     setIsLogin(!isLogin);
@@ -29,10 +29,10 @@ export default function Auth() {
   };
 
   useEffect(() => {
-    if (token) {
+    if (isAuthenticated) {
       navigate("/dashboard");
     }
-  }, [token]);
+  }, [isAuthenticated]);
 
   return (
     <>
@@ -62,6 +62,28 @@ export default function Auth() {
         </div>
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form onSubmit={handleSubmit} className="space-y-6">
+            {!isLogin && (
+              <div>
+                <label
+                  htmlFor="fullName"
+                  className="block text-sm/6 font-medium text-gray-900"
+                >
+                  Full Name
+                </label>
+                <div className="mt-2">
+                  <input
+                    id="fullName"
+                    name="fullName"
+                    type="text"
+                    value={formData.fullName}
+                    onChange={handleChange}
+                    required
+                    autoComplete="fullName"
+                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-green-600 sm:text-sm/6"
+                  />
+                </div>
+              </div>
+            )}
             <div>
               <label
                 htmlFor="email"

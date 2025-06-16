@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
@@ -10,12 +10,14 @@ import {
 import { getAllBoards as getAllBoardsClient } from "../api/board";
 import { getAllColumns as getAllColumnsClient } from "../api/column";
 import { getAllTasksByBoardId } from "../api/task";
-
-export const AppContext = createContext({});
+import { userProfile as userProfileClient } from "../api/auth";
+import { AppContext } from "./AppContext";
 
 const AppContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    Cookies.get("token") ? true : false
+  );
   const [loading, setLoading] = useState(true);
   const [boards, setBoards] = useState([]);
   const [boardId, setBoardId] = useState("");
@@ -31,8 +33,6 @@ const AppContextProvider = ({ children }) => {
         secure: true,
         sameSite: "strict",
       });
-      setToken(data.token);
-      setUser(data.user);
       toast.success(message);
       navigate("/dashboard");
     } catch (error) {
@@ -52,25 +52,35 @@ const AppContextProvider = ({ children }) => {
         secure: true,
         sameSite: "strict",
       });
-      setToken(data.token);
-      setUser(data.user);
+      setIsAuthenticated(true);
       toast.success(message);
       // 🟢 Call board loader directly here after login
       await getAllBoards();
       navigate("/dashboard");
     } catch (error) {
-      console.log(error);
-      const { message } = error.response.data;
-      toast.error(message);
+      console.log({ error });
     }
   };
 
   const logOut = () => {
     setUser(null);
-    setToken("");
+    setIsAuthenticated(false);
+    setBoards([]);
+    setBoardId("");
     Cookies.remove("token");
     toast.success("Logout Successfull..!");
     navigate("/");
+  };
+
+  const userProfile = async () => {
+    try {
+      const res = await userProfileClient();
+      const { data } = res;
+      setUser(data);
+    } catch (error) {
+      setUser(null);
+      console.log({ error });
+    }
   };
 
   const getAllBoards = async () => {
@@ -127,11 +137,13 @@ const AppContextProvider = ({ children }) => {
     }
   };
 
+  console.log({ isAuthenticated });
   useEffect(() => {
     const cookieToken = Cookies.get("token");
     if (cookieToken) {
-      setToken(cookieToken);
+      setIsAuthenticated(true);
       getAllBoards();
+      userProfile();
     }
     setLoading(false); // 🟡 Always set loading after token check
   }, []);
@@ -139,7 +151,7 @@ const AppContextProvider = ({ children }) => {
   return (
     <AppContext.Provider
       value={{
-        token,
+        isAuthenticated,
         loading,
         user,
         registerUser,
@@ -154,9 +166,7 @@ const AppContextProvider = ({ children }) => {
       }}
     >
       <Navbar />
-      {/* <div className="max-w-[1280px] mx-auto"> */}
-      {children}
-      {/* </div> */}
+      <div className="container mx-auto w-[100dvw]">{children}</div>
     </AppContext.Provider>
   );
 };

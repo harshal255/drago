@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { AppContext } from "../context/AppContextProvider";
+import { AppContext } from "../context/AppContext";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { MdDeleteOutline } from "react-icons/md";
@@ -14,7 +14,7 @@ const AddBoard = () => {
   const [formData, setFormData] = useState({ title: "" });
   const navigate = useNavigate();
 
-  console.log({boards,getAllBoards})
+  console.log({ boards, getAllBoards });
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -44,10 +44,10 @@ const AddBoard = () => {
   };
 
   return (
-    <div className="py-12 max-w-xl mx-auto divide-y md:max-w-4xl">
+    <div className="py-12 max-w-xl mx-auto md:max-w-4xl">
       <h2 className="text-2xl font-bold">
-        {boards?.length < 1 && "It's like you have not added board yet,"} Create
-        Board
+        {boards?.length < 1 && "Looks like you haven’t created a board yet,"}{" "}
+        Start by creating one to manage your tasks.
       </h2>
       <div className="mt-8 max-w-md">
         <form onSubmit={addBoard} className="grid grid-cols-1 gap-6">

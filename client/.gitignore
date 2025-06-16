@@ -11,7 +11,7 @@ node_modules
 dist
 dist-ssr
 *.local
-
+.env
 #no need to having talwind.config.js for tailwindV-4
 tailwind.config.js 
 

@@ -7,3 +7,7 @@ export const registerUser = (userData) => {
 export const loginUser = (userData) => {
   return axiosClient.post("/user/login", userData);
 };
+
+export const userProfile = () => {
+  return axiosClient.get("/user/profile");
+};

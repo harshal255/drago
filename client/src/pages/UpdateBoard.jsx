@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import { updateBoard as updateBoardClient } from "../api/board";
-import { AppContext } from "../context/AppContextProvider";
+import { AppContext } from "../context/AppContext";
 
 const UpdateBoard = () => {
   const { board_id } = useParams();
@@ -28,7 +28,7 @@ const UpdateBoard = () => {
   };
 
   return (
-    <div className="py-12 max-w-xl mx-auto divide-y md:max-w-4xl">
+    <div className="py-12 max-w-xl mx-auto  md:max-w-4xl">
       <h2 className="text-2xl font-bold">Update Board</h2>
       <div className="mt-8 max-w-md">
         <form onSubmit={UpdateBoard} className="grid grid-cols-1 gap-6">

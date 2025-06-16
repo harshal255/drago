@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { AppContext } from "../context/AppContextProvider";
+import { AppContext } from "../context/AppContext";
 import { useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import { addTask as addTaskClient } from "../api/task";
@@ -55,7 +55,7 @@ const AddTask = () => {
   }, [defaultBoardId]);
 
   return (
-    <div className="py-12 max-w-xl mx-auto divide-y md:max-w-4xl">
+    <div className="py-12 max-w-xl mx-auto  md:max-w-4xl">
       <h2 className="text-2xl font-bold">Create Task</h2>
       <div className="mt-8 max-w-md">
         <form onSubmit={addTask} className="grid grid-cols-1 gap-6">

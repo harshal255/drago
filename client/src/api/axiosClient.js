@@ -1,9 +1,10 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
+import config from "../config";
 
 const axiosClient = axios.create({
-  baseURL: `http://localhost:5000/api`,
+  baseURL: `${config.server_url}`,
   //   httpsAgent: false, // Disable HTTPS
   headers: {
     Accept: "application/json",
@@ -29,7 +30,7 @@ axiosClient.interceptors.request.use((config) => {
 axiosClient.interceptors.response.use(
   async (response) => {
     response = response.data;
-    console.log(response.status);
+    // console.log(response.status);
     return response;
   },
   async (error) => {

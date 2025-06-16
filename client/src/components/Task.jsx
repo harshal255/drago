@@ -3,7 +3,7 @@ import { CiClock1 } from "react-icons/ci";
 import { FaEdit } from "react-icons/fa";
 import { MdDeleteOutline } from "react-icons/md";
 import moment from "moment";
-import { AppContext } from "../context/AppContextProvider";
+import { AppContext } from "../context/AppContext";
 import { useNavigate } from "react-router-dom";
 import { deleteTask as deleteTaskClient } from "../api/task";
 import toast from "react-hot-toast";
@@ -62,7 +62,6 @@ const Task = ({
         <span className="flex items-center gap-2 text-gray-500">
           <CiClock1 />
           <span>{moment(dueDate).format("MMM Do YY")}</span>
-          <BsMenuButton />
         </span>
         <span className="flex items-center gap-2">
           <div className="h-7 w-7 rounded-full bg-gray-300"></div>

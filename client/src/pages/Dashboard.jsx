@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import Column from "../components/Column";
-import { AppContext } from "../context/AppContextProvider";
+import { AppContext } from "../context/AppContext";
 import BoardHeader from "../components/BoardHeader";
 import { moveTask } from "../api/task";
 
@@ -45,7 +45,7 @@ const Dashboard = () => {
     <>
       <BoardHeader />
       <>
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 p-5  rounded-3xl gap-5 w-[100dvw]">
+        <div className="container grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 px-10 gap-5 w-[100dvw]">
           {columns.map((ele) => {
             Object.assign(ele, { tasks, setTasks, setActiveCard, onDrop });
             return <Column key={ele.id} {...ele} />;
