@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 
 const registerUser = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const { fullName, email, password } = req.body;
     // console.log({ email, password });
     const alreadyExist = await User.findOne({ email });
     if (alreadyExist) {
@@ -15,7 +15,7 @@ const registerUser = async (req, res, next) => {
     const salt = await bcrypt.genSalt(10);
     const HashigPassword = await bcrypt.hash(password, salt);
 
-    const userData = { email, password: HashigPassword };
+    const userData = { fullName, email, password: HashigPassword };
     const newUser = new User(userData);
     const user = await newUser.save();
     const token = jwt.sign({ id: user._id }, config.jwt_token_secret);
@@ -54,4 +54,18 @@ const loginUser = async (req, res, next) => {
   }
 };
 
-module.exports = { registerUser, loginUser };
+const authUser = async (req, res) => {
+  try {
+    const user_id = req.user._id;
+    const user = await User.findById(user_id).select("-password");
+    return res.status(200).json({
+      data: user,
+      message: "User Login Successful",
+    });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+module.exports = { registerUser, loginUser, authUser };
