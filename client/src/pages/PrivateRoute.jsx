@@ -5,7 +5,7 @@ import Loder from "../components/Loder";
 
 const PrivateRoute = () => {
   const { isAuthenticated, loading } = useContext(AppContext);
-  console.log("I am a private route", { isAuthenticated, loading });
+  // console.log("I am a private route", { isAuthenticated, loading });
   if (loading) {
     return <Loder />;
   }

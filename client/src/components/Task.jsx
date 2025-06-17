@@ -1,13 +1,12 @@
-import { BsMenuButton } from "react-icons/bs";
 import { CiClock1 } from "react-icons/ci";
 import { FaEdit } from "react-icons/fa";
 import { MdDeleteOutline } from "react-icons/md";
 import moment from "moment";
-import { AppContext } from "../context/AppContext";
 import { useNavigate } from "react-router-dom";
 import { deleteTask as deleteTaskClient } from "../api/task";
 import toast from "react-hot-toast";
-import { useContext } from "react";
+import { useDispatch } from "react-redux";
+import { fetchTasks } from "../redux/features/taskSlice";
 
 const Task = ({
   id,
@@ -16,27 +15,25 @@ const Task = ({
   description,
   dueDate,
   color,
-  setTasks,
   setActiveCard,
 }) => {
   const navigate = useNavigate();
-  const { getAllTasks } = useContext(AppContext);
+  const dispatch = useDispatch();
 
   const deleteTask = async (task_id) => {
     try {
       const res = await deleteTaskClient(task_id);
-      const { message } = res;
-      toast.success(message);
-      const tasks = await getAllTasks(board_id);
-      setTasks(tasks);
+      toast.success(res.message);
+      dispatch(fetchTasks(board_id));
     } catch (error) {
-      console.log(error);
+      toast.error("Failed to delete task");
+      console.error(error);
     }
   };
 
   return (
     <div
-      className="relative shadow-2xl p-5 rounded-lg bg-white flex flex-col gap-3"
+      className="min-h-[100px] relative shadow-2xl p-5 rounded-lg bg-white flex flex-col gap-3"
       draggable={true}
       onDragStart={() => setActiveCard(id)}
       onDragEnd={() => setActiveCard(null)}

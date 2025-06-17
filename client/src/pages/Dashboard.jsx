@@ -1,14 +1,20 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Column from "../components/Column";
-import { AppContext } from "../context/AppContext";
 import BoardHeader from "../components/BoardHeader";
 import { moveTask } from "../api/task";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchColumns } from "../redux/features/columnSlice";
+import { fetchTasks } from "../redux/features/taskSlice";
 
 const Dashboard = () => {
-  const [columns, setColumns] = useState([]);
-  const { getAllColumns, boardId, getAllTasks } = useContext(AppContext);
-  const [tasks, setTasks] = useState([]);
   const [activeCard, setActiveCard] = useState(null);
+  const dispatch = useDispatch();
+
+  const { columns, loading: columnsLoading } = useSelector(
+    (state) => state.column
+  );
+  const { tasks, loading: tasksLoading } = useSelector((state) => state.task);
+  const { boardId } = useSelector((state) => state.board);
 
   const onDrop = async (column_id, position) => {
     console.log(
@@ -23,8 +29,7 @@ const Dashboard = () => {
         column_id,
         position,
       });
-      const updatedTask = await getAllTasks(boardId);
-      setTasks(updatedTask);
+      dispatch(fetchTasks(boardId));
     } catch (error) {
       console.log({ error });
     }
@@ -32,26 +37,34 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (boardId) {
-      (async () => {
-        const cols = await getAllColumns(boardId);
-        setColumns(cols);
-        const taskList = await getAllTasks(boardId);
-        setTasks(taskList);
-      })();
+      dispatch(fetchColumns(boardId));
+      dispatch(fetchTasks(boardId));
     }
   }, [boardId]);
 
   return (
     <>
       <BoardHeader />
-      <>
-        <div className="container grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 px-10 gap-5 w-[100dvw]">
-          {columns.map((ele) => {
-            Object.assign(ele, { tasks, setTasks, setActiveCard, onDrop });
-            return <Column key={ele.id} {...ele} />;
-          })}
-        </div>
-      </>
+      <div className="container grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 px-10 gap-5 w-[100dvw]">
+        {columnsLoading
+          ? Array.from({ length: 3 }).map((_, i) => (
+              <div
+                key={i}
+                className="h-[500px] bg-gray-200 rounded-lg animate-pulse"
+              ></div>
+            ))
+          : columns?.map((col) => (
+              <Column
+                key={col.id}
+                {...col}
+                tasks={tasks}
+                setTasks={() => {}}
+                onDrop={onDrop}
+                setActiveCard={setActiveCard}
+                tasksLoading={tasksLoading}
+              />
+            ))}
+      </div>
     </>
   );
 };

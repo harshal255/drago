@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useEffect, useState } from "react";
 import { AppContext } from "../context/AppContext";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
@@ -8,13 +8,14 @@ import {
   addBoard as addBoardClient,
   deleteBoard as deleteBoardClient,
 } from "../api/board";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchBoards } from "../redux/features/boardSlice";
 
 const AddBoard = () => {
-  const { boards, getAllBoards } = useContext(AppContext);
-  const [formData, setFormData] = useState({ title: "" });
   const navigate = useNavigate();
-
-  console.log({ boards, getAllBoards });
+  const dispatch = useDispatch();
+  const { boards } = useSelector((state) => state.board);
+  const [formData, setFormData] = useState({ title: "" });
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -26,7 +27,7 @@ const AddBoard = () => {
       const res = await addBoardClient(formData);
       const { message } = res;
       toast.success(message);
-      await getAllBoards();
+      dispatch(fetchBoards());
       navigate("/dashboard");
     } catch (error) {
       console.log(error);
@@ -37,11 +38,15 @@ const AddBoard = () => {
       const res = await deleteBoardClient(board_id);
       const { message } = res;
       toast.success(message);
-      await getAllBoards();
+      dispatch(fetchBoards());
     } catch (error) {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    dispatch(fetchBoards());
+  }, [dispatch]);
 
   return (
     <div className="py-12 max-w-xl mx-auto md:max-w-4xl">
@@ -74,7 +79,9 @@ const AddBoard = () => {
           </button>
         </form>
       </div>
-      <h2 className="text-2xl font-bold my-5">List of Board</h2>
+      {boards?.length > 0 && (
+        <h2 className="text-2xl font-bold my-5">List of Board</h2>
+      )}
       <div className="flex flex-col gap-3">
         {boards?.map((ele) => {
           return (

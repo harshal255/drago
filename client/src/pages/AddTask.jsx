@@ -1,13 +1,15 @@
-import { useContext, useEffect, useState } from "react";
-import { AppContext } from "../context/AppContext";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import { addTask as addTaskClient } from "../api/task";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchTasks } from "../redux/features/taskSlice";
+import { fetchColumns } from "../redux/features/columnSlice";
 
 const AddTask = () => {
   const { column_id } = useParams();
 
-  console.log({ column_id });
+  // console.log({ column_id });
   const initialFormData = {
     title: "",
     description: "",
@@ -15,11 +17,12 @@ const AddTask = () => {
     dueDate: "",
     priority: 1,
   };
-  const { getAllColumns, boards, getAllTasks } = useContext(AppContext);
+
+  const { boardId: defaultBoardId } = useSelector((state) => state.board);
+  const { columns } = useSelector((state) => state.column);
   const [formData, setFormData] = useState(initialFormData);
   const navigate = useNavigate();
-  const [columns, setColumns] = useState([]);
-  const defaultBoardId = boards[0]?.id;
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -31,7 +34,7 @@ const AddTask = () => {
     try {
       const res = await addTaskClient(formData);
       const { message } = res;
-      await getAllTasks(column_id);
+      dispatch(fetchTasks(defaultBoardId));
       toast.success(message);
       navigate("/dashboard");
     } catch (error) {
@@ -48,8 +51,7 @@ const AddTask = () => {
   useEffect(() => {
     (async () => {
       if (defaultBoardId) {
-        const cols = await getAllColumns(defaultBoardId);
-        setColumns(cols);
+        dispatch(fetchColumns(defaultBoardId));
       }
     })();
   }, [defaultBoardId]);

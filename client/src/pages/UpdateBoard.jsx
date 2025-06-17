@@ -1,14 +1,15 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import { updateBoard as updateBoardClient } from "../api/board";
-import { AppContext } from "../context/AppContext";
+import { useDispatch } from "react-redux";
+import { fetchBoards } from "../redux/features/boardSlice";
 
 const UpdateBoard = () => {
   const { board_id } = useParams();
-  const { getAllBoards } = useContext(AppContext);
   const [formData, setFormData] = useState({ title: "", board_id });
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,7 +21,7 @@ const UpdateBoard = () => {
       const res = await updateBoardClient(formData);
       const { message } = res;
       toast.success(message);
-      await getAllBoards();
+      dispatch(fetchBoards());
       navigate("/dashboard");
     } catch (error) {
       console.log(error);
