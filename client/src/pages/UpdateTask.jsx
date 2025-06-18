@@ -5,6 +5,7 @@ import {
   getTaskById as getTaskByIdClient,
   updateTask as updateTaskClient,
 } from "../api/task";
+import moment from "moment";
 
 const UpdateTask = () => {
   const { task_id } = useParams();
@@ -31,7 +32,7 @@ const UpdateTask = () => {
         title: data.title,
         description: data.description,
         priority: data.priority,
-        dueDate: data.dueDate,
+        dueDate: moment(data.dueDate).format("YYYY-MM-DD"),
       });
     } catch (error) {
       console.log(error);

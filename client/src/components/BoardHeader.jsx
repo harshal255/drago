@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 import { FaPlus } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { setBoardId } from "../redux/features/boardSlice";
+import { setBoardId,setCurrentBoard } from "../redux/features/boardSlice";
 
 const BoardHeader = () => {
   const { user } = useContext(AppContext);
@@ -38,7 +38,10 @@ const BoardHeader = () => {
           : boards?.map((ele) => (
               <div
                 key={ele.id}
-                onClick={() => dispatch(setBoardId(ele.id))}
+                onClick={() => {
+                  dispatch(setBoardId(ele.id))
+                  dispatch(setCurrentBoard(ele.id))
+                }}
                 className={`${
                   boardId === ele.id
                     ? "bg-gray-200 border-gray-800"

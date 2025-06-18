@@ -1,13 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import { updateBoard as updateBoardClient } from "../api/board";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchBoards } from "../redux/features/boardSlice";
 
 const UpdateBoard = () => {
   const { board_id } = useParams();
-  const [formData, setFormData] = useState({ title: "", board_id });
+  const board = useSelector((state) =>
+    state.board.boards?.find((board) => board.id === board_id)
+  );
+  // console.log({ board });
+  const [formData, setFormData] = useState({
+    title: "",
+    board_id,
+  });
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -27,6 +34,12 @@ const UpdateBoard = () => {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    if (board?.title) {
+      setFormData((prev) => ({ ...prev, title: board.title }));
+    }
+  }, [board]);
 
   return (
     <div className="py-12 max-w-xl mx-auto  md:max-w-4xl">

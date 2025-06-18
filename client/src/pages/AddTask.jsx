@@ -5,6 +5,7 @@ import { addTask as addTaskClient } from "../api/task";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTasks } from "../redux/features/taskSlice";
 import { fetchColumns } from "../redux/features/columnSlice";
+import moment from "moment";
 
 const AddTask = () => {
   const { column_id } = useParams();
@@ -14,9 +15,10 @@ const AddTask = () => {
     title: "",
     description: "",
     column_id,
-    dueDate: "",
+    dueDate: moment(new Date()).format("YYYY-MM-DD"),
     priority: 1,
   };
+  console.log({ initialFormData });
 
   const { boardId: defaultBoardId } = useSelector((state) => state.board);
   const { columns } = useSelector((state) => state.column);

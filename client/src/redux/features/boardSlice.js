@@ -3,11 +3,11 @@ import { getAllBoards as getAllBoardsClient } from "../../api/board";
 
 export const fetchBoards = createAsyncThunk("board/fetchBoards", async () => {
   const res = await getAllBoardsClient();
-  console.log("fetch boards called", res);
+  // console.log("fetch boards called", res);
   return res.data.map((ele) => ({ title: ele.title, id: ele._id }));
 });
 
-console.log({ fetchBoards });
+// console.log({ fetchBoards });
 
 const boardSlice = createSlice({
   name: "board",
@@ -16,29 +16,30 @@ const boardSlice = createSlice({
     boardId: "",
     loading: false,
     error: null,
+    currentBoard: {},
   },
   reducers: {
     setBoardId: (state, action) => {
       state.boardId = action.payload;
     },
     clearBoards: (state) => {
-      state.value = [];
+      state.boards = [];
       state.boardId = "";
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchBoards.pending, (state) => {
-        console.log("📡 fetchBoards → pending...");
+        // console.log("📡 fetchBoards → pending...");
         state.loading = true;
       })
       .addCase(fetchBoards.fulfilled, (state, action) => {
-        console.log("✅ Fetched boards:", action.payload);
+        // console.log("✅ Fetched boards:", action.payload);
         state.loading = false;
         state.boards = action.payload;
         if (action.payload.length > 0) {
           state.boardId = action.payload[0].id;
-          console.log("🟢 Default boardId set:", state.boardId);
+          // console.log("🟢 Default boardId set:", state.boardId);
         }
       })
       .addCase(fetchBoards.rejected, (state, action) => {
@@ -49,5 +50,5 @@ const boardSlice = createSlice({
   },
 });
 
-export const { setBoardId, clearBoards } = boardSlice.actions;
+export const { setBoardId, clearBoards, setCurrentBoard } = boardSlice.actions;
 export default boardSlice.reducer;

@@ -42,8 +42,6 @@ const AppContextProvider = ({ children }) => {
     }
   };
 
-  console.log({ user });
-
   const loginUser = async (userData) => {
     try {
       const res = await loginUserClient(userData);
@@ -84,8 +82,6 @@ const AppContextProvider = ({ children }) => {
       console.log({ error });
     }
   };
-
-  console.log({ isAuthenticated });
 
   const checkServerWakeUp = async () => {
     const res = await fetch(config.server_url);
